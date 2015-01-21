@@ -10,6 +10,7 @@
  * January 21, 2015.
  * -----------------------------
      * AMD Support
+     * Attempt to vertically center gauge if no title is defined
  
  * -----------------------------
  * March 16, 2014.
@@ -391,11 +392,13 @@
 	    // delta
 	    dx = (canvasW - widgetW)/2;
 	    dy = (canvasH - widgetH)/2;
-	
-	    // title
-	    titleFontSize = ((widgetH / 8) > 10) ? (widgetH / 10) : 10;
-	    titleX = dx + widgetW / 2;
-	    titleY = dy + widgetH / 11;
+		
+		if(obj.config.title !== "") {
+		    // title
+		    titleFontSize = ((widgetH / 8) > 10) ? (widgetH / 10) : 10;
+		    titleX = dx + widgetW / 2;
+		    titleY = dy + widgetH / 11;
+	    }
 	
 	    // value
 	    valueFontSize = ((widgetH / 6.4) > 16) ? (widgetH / 5.4) : 18;
@@ -453,16 +456,24 @@
 	    // delta
 	    dx = (canvasW - widgetW)/2;
 	    dy = (canvasH - widgetH)/2;
-	
+		
 	    // title
-	    titleFontSize = ((widgetH / 8) > obj.config.titleMinFontSize) ? (widgetH / 10) : obj.config.titleMinFontSize;
-	    titleX = dx + widgetW / 2;
-	    titleY = dy + widgetH / 6.4;
+		if(obj.config.title !== "") {
+	    	titleFontSize = ((widgetH / 8) > obj.config.titleMinFontSize) ? (widgetH / 10) : obj.config.titleMinFontSize;
+	    	titleX = dx + widgetW / 2;
+	    	titleY = dy + widgetH / 6.4;
+	    }
 	
 	    // value
 	    valueFontSize = ((widgetH / 6.5) > obj.config.valueMinFontSize) ? (widgetH / 6.5) : obj.config.valueMinFontSize;
 	    valueX = dx + widgetW / 2;
-	    valueY = dy + widgetH / 1.275;
+	    
+	    // Attempt to center labels if no title defined
+	    if(obj.config.title !== "") {
+	    	valueY = dy + widgetH / 1.25;
+	    } else {
+	    	valueY = dy + widgetH / 1.45;
+	    }
 	
 	    // label
 	    labelFontSize = ((widgetH / 16) > obj.config.labelMinFontSize) ? (widgetH / 16) : obj.config.labelMinFontSize;
@@ -547,7 +558,13 @@
 	      Ri = Ro - w / 6.666666666666667 * gws;
 	
 	      Cx = w / 2 + dx;
-	      Cy = h / 1.25 + dy;
+	      
+	      // Attempt to center gauge if no title defined
+	      if(obj.config.title !== "") {
+	      	Cy = h / 1.25 + dy;
+	      } else {
+	      	Cy = h / 1.45 + dy;
+	      }
 	
 	      Xo = w / 2 + dx + Ro * Math.cos(alpha);
 	      Yo = h - (h - Cy) - Ro * Math.sin(alpha);
@@ -604,18 +621,20 @@
 	  if(obj.config.donut) {
 	    obj.level.transform("r" + obj.config.donutStartAngle + ", " + (obj.params.widgetW/2 + obj.params.dx) + ", " + (obj.params.widgetH/1.95 + obj.params.dy));
 	  }
-	
+	  
 	  // title
-	  obj.txtTitle = obj.canvas.text(obj.params.titleX, obj.params.titleY, obj.config.title);
-	  obj.txtTitle.attr({
-	    "font-size":obj.params.titleFontSize,
-	    "font-weight":"bold",
-	    "font-family":"Arial",
-	    "fill":obj.config.titleFontColor,
-	    "fill-opacity":"1"
-	  });
-	  setDy(obj.txtTitle, obj.params.titleFontSize, obj.params.titleY);
-	
+	  if(obj.config.title !== "") {
+		  obj.txtTitle = obj.canvas.text(obj.params.titleX, obj.params.titleY, obj.config.title);
+		  obj.txtTitle.attr({
+		    "font-size":obj.params.titleFontSize,
+		    "font-weight":"bold",
+		    "font-family":"Arial",
+		    "fill":obj.config.titleFontColor,
+		    "fill-opacity":"1"
+		  });
+		  setDy(obj.txtTitle, obj.params.titleFontSize, obj.params.titleY);
+	  }
+	  
 	  // value
 	  obj.txtValue = obj.canvas.text(obj.params.valueX, obj.params.valueY, 0);
 	  obj.txtValue.attr({
